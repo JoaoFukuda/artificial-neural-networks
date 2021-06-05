@@ -5,6 +5,19 @@ public class Layer
     private List<Perceptron> perceptrons;
     public ActivatorFunction function;
 
+    //Sem pesos
+    public Layer(int numberOfPerceptrons) {
+        this.perceptrons = new ArrayList<>();
+
+        for (int i = 0; i < numberOfPerceptrons; i++) {
+            List<Perceptron> perceptronsFromPreviousLayer = new ArrayList<>();
+
+            Perceptron perceptron = new Perceptron(perceptronsFromPreviousLayer, this);
+
+            this.perceptrons.add(perceptron);
+        }
+    }
+
     //Pesos random
     public Layer(int numberOfPerceptrons, Layer previousLayer, ActivatorFunction function) {
         this.perceptrons = new ArrayList<>();
@@ -61,11 +74,7 @@ public class Layer
 
     public void calculateErrorsFromLabel(float alpha, float[] label) {
         for (int i = 0; i < perceptrons.size(); i++) {
-            Perceptron outputPerceptron = perceptrons.get(i);
-            Float outputSignal = outputPerceptron.getOutputSignal();
-            Float inputSignal = outputPerceptron.getInputSignal();
-            Float error = (label[i] - outputSignal)  * function.derived(inputSignal);
-            outputPerceptron.calculateNewWeights(error, alpha);
+            perceptrons.get(i).calculateNewWeightsFromLabel(alpha, label[i]);
         }
     }
 

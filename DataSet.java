@@ -8,9 +8,9 @@ public class DataSet
         //TODO: Load from csv file
         vectors = new ArrayList<Vector>();
         vectors.add(new Vector(new float[]{1.0F, 1.0F}, new float[]{1.0F}));
-        vectors.add(new Vector(new float[]{1.0F, 0.0F}, new float[]{0.0F}));
-        vectors.add(new Vector(new float[]{0.0F, 1.0F}, new float[]{0.0F}));
-        vectors.add(new Vector(new float[]{0.0F, 0.0F}, new float[]{0.0F}));
+        vectors.add(new Vector(new float[]{1.0F, -1.0F}, new float[]{-1.0F}));
+        vectors.add(new Vector(new float[]{-1.0F, 1.0F}, new float[]{-1.0F}));
+        vectors.add(new Vector(new float[]{-1.0F, -1.0F}, new float[]{-1.0F}));
     }
 
     List<Vector> getTestSet() {

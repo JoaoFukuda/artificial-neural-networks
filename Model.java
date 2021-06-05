@@ -12,7 +12,7 @@ public class Model
         m.testModel();
     }
 
-    private final Float alpha = 0.3F;
+    private final Float alpha = 0.02F;
 
     private DataSet dataset;
 
@@ -27,28 +27,30 @@ public class Model
     }
 
     public void trainModel() {
-        for (int epoca = 0; epoca < 100; epoca++) {
+        for (int epoca = 0; epoca < 3000; epoca++) {
+            float quad_error = 0.0F;
             for (Vector data : dataset.getTrainSet()){
+                float error_sum = 0.0F;
                 feedFoward(data);
                 backPropagation(data);
                 updateWeights();
+                for (Perceptron p : outputLayer.getPerceptrons()) {
+                   error_sum += p.getError() * p.getError();
+                }
+                quad_error += error_sum / 2.0F;
             }
+            quad_error /= dataset.getTrainSet().size();
+            System.out.println(quad_error);
         }
     }
 
     public void testModel() {
-        System.out.println("\033[1mResultados\033[m:");
         for (Vector test : dataset.getTestSet()) {
             feedFoward(test);
-
-            for (Perceptron outputPerceptron : this.outputLayer.getPerceptrons()) {
-                System.out.println("\t\033[1;92m" + outputPerceptron.getOutputSignal() + "\033[m");
-            }
         }
     }
 
     public void feedFoward(Vector data) {
-        List<Perceptron> perceptrons = this.inputLayer.getPerceptrons();
         //setando os valores de entrada dos neuronios na camada de entrada
         this.inputLayer.setData(data.input);
         this.hiddenLayer.calculateData();
@@ -66,12 +68,9 @@ public class Model
     }
 
     private void initializeLayersWithRandomWeights(int nOfInputPerceptrons, int nOfHiddenPerceptrons, int nOfOutputPerceptrons) {
-        System.out.println("Input (\033[1;93m" + nOfInputPerceptrons + "\033[m):");
-        this.inputLayer = new Layer(nOfInputPerceptrons, null, null);
-        System.out.println("Hidden (\033[1;93m" + nOfHiddenPerceptrons + "\033[m):");
-        this.hiddenLayer = new Layer(nOfHiddenPerceptrons, this.inputLayer, new ReLuFunction());
-        System.out.println("Output (\033[1;93m" + nOfOutputPerceptrons + "\033[m):");
-        this.outputLayer = new Layer(nOfOutputPerceptrons, this.hiddenLayer, new SigmoidFunction());
+        this.inputLayer = new Layer(nOfInputPerceptrons);
+        this.hiddenLayer = new Layer(nOfHiddenPerceptrons, this.inputLayer, new BipolarSigmoidFunction());
+        this.outputLayer = new Layer(nOfOutputPerceptrons, this.hiddenLayer, new BipolarSigmoidFunction());
     }
 
     private void initializeLayersWithFixedWeights(int nOfInputPerceptrons, int nOfHiddenPerceptrons, int nOfOutputPerceptrons) {
@@ -84,17 +83,29 @@ public class Model
         secondPerceptronOfHiddenLayer.add(0.28F);
         secondPerceptronOfHiddenLayer.add(0.16F);
         secondPerceptronOfHiddenLayer.add(0.62F);
+        ArrayList<Float> thirdPerceptronOfHiddenLayer = new ArrayList<>();
+        firstPerceptronOfHiddenLayer.add(0.53F);
+        firstPerceptronOfHiddenLayer.add(0.97F);
+        firstPerceptronOfHiddenLayer.add(0.43F);
+        ArrayList<Float> fourthPerceptronOfHiddenLayer = new ArrayList<>();
+        secondPerceptronOfHiddenLayer.add(0.28F);
+        secondPerceptronOfHiddenLayer.add(0.16F);
+        secondPerceptronOfHiddenLayer.add(0.62F);
         hiddenLayerWeights.add(firstPerceptronOfHiddenLayer);
         hiddenLayerWeights.add(secondPerceptronOfHiddenLayer);
+        hiddenLayerWeights.add(thirdPerceptronOfHiddenLayer);
+        hiddenLayerWeights.add(fourthPerceptronOfHiddenLayer);
 
         ArrayList<ArrayList<Float>> outputLayerWeights = new ArrayList<>();
         ArrayList<Float> firstPerceptronOfOutputLayer = new ArrayList<>();
         firstPerceptronOfOutputLayer.add(0.17F);
         firstPerceptronOfOutputLayer.add(0.24F);
         firstPerceptronOfOutputLayer.add(0.43F);
+        firstPerceptronOfOutputLayer.add(0.24F);
+        firstPerceptronOfOutputLayer.add(0.43F);
         outputLayerWeights.add(firstPerceptronOfOutputLayer);
 
-        this.inputLayer = new Layer(nOfInputPerceptrons, null, null);
+        this.inputLayer = new Layer(nOfInputPerceptrons);
         this.hiddenLayer = new Layer(nOfHiddenPerceptrons, this.inputLayer, new SigmoidFunction(), hiddenLayerWeights);
         this.outputLayer = new Layer(nOfOutputPerceptrons, this.hiddenLayer, new SigmoidFunction(), outputLayerWeights);
     }
