@@ -18,6 +18,7 @@ public class DataSet
     }
 
     List<Vector> getTrainSet() {
+       Collections.shuffle(vectors);
         return vectors;
     }
 }

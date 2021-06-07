@@ -20,9 +20,8 @@ public class Perceptron
 
         Random r = new Random();
         for (Perceptron perceptron : inputPerceptrons) {
-            Float random = r.nextFloat();
+            Float random = r.nextFloat() - 0.5F;
             this.weights.put(perceptron, random);
-            System.out.println("\tw: \033[1;93m" + random + "\033[m");
         }
 
         this.biasWeight = r.nextFloat();
@@ -51,22 +50,24 @@ public class Perceptron
         this.outputSignal = this.layer.getFunction().activate(this.inputSignal);
     }
 
+    public void calculateNewWeightsFromLabel(Float alpha, Float label) {
+        Float error = (label - outputSignal)  * this.layer.getFunction().derived(inputSignal);
+        calculateNewWeights(error, alpha);
+    }
+
     public void calculateNewWeights(Float error, Float alpha) {
         this.error = error;
-
         for (Perceptron perceptron : weights.keySet()) {
-            Float weight = alpha * error * perceptron.getOutputSignal();
+            Float weight = weights.get(perceptron) + (alpha * this.error * perceptron.getOutputSignal());
             this.newWeights.put(perceptron, weight);
         }
 
-        this.biasWeight = alpha * error;
+        this.biasWeight += alpha * this.error;
     }
 
     public void updateWeights() {
         for (Perceptron perceptron :  weights.keySet()) {
-            Float previousWeight = weights.get(perceptron);
-            Float newWeight = newWeights.get(perceptron);
-            this.weights.put(perceptron, previousWeight + newWeight);
+            this.weights.put(perceptron, newWeights.get(perceptron));
         }
     }
 
