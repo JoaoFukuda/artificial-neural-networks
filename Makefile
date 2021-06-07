@@ -6,7 +6,7 @@ OUTPUTS=ActivatorFunction.class DataSet.class Layer.class Model.class Perceptron
 all: $(OUTPUTS)
 
 %.class: %.java
-	javac $<
+	javac $(SRC)
 
 run: $(OUTPUTS)
 	java Model 2 4 1

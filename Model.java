@@ -69,8 +69,8 @@ public class Model
 
     private void initializeLayersWithRandomWeights(int nOfInputPerceptrons, int nOfHiddenPerceptrons, int nOfOutputPerceptrons) {
         this.inputLayer = new Layer(nOfInputPerceptrons);
-        this.hiddenLayer = new Layer(nOfHiddenPerceptrons, this.inputLayer, new BipolarSigmoidFunction());
-        this.outputLayer = new Layer(nOfOutputPerceptrons, this.hiddenLayer, new BipolarSigmoidFunction());
+        this.hiddenLayer = new Layer(nOfHiddenPerceptrons, this.inputLayer, new SigmoidFunction());
+        this.outputLayer = new Layer(nOfOutputPerceptrons, this.hiddenLayer, new SigmoidFunction());
     }
 
     private void initializeLayersWithFixedWeights(int nOfInputPerceptrons, int nOfHiddenPerceptrons, int nOfOutputPerceptrons) {
